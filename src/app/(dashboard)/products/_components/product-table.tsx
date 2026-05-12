@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,23 +36,36 @@ export function ProductTable({ products, categories }: ProductTableProps) {
   return (
     <>
       <div className="flex justify-end mb-4">
-        <Sheet open={addOpen} onOpenChange={setAddOpen}>
-          <SheetTrigger asChild>
-            <Button data-testid="add-product-btn">
-              <Plus className="h-4 w-4 mr-2" /> Add product
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Add product</SheetTitle>
-            </SheetHeader>
+        <Button onClick={() => setAddOpen(true)} data-testid="add-product-btn">
+          <Plus className="h-4 w-4 mr-2" /> Add product
+        </Button>
+      </div>
+
+      {/* Add sheet */}
+      <Sheet open={addOpen} onOpenChange={setAddOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Add product</SheetTitle>
+          </SheetHeader>
+          <ProductForm categories={categories} onSuccess={() => setAddOpen(false)} />
+        </SheetContent>
+      </Sheet>
+
+      {/* Edit sheet */}
+      <Sheet open={!!editProduct} onOpenChange={(o) => !o && setEditProduct(null)}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Edit product</SheetTitle>
+          </SheetHeader>
+          {editProduct && (
             <ProductForm
               categories={categories}
-              onSuccess={() => setAddOpen(false)}
+              product={editProduct}
+              onSuccess={() => setEditProduct(null)}
             />
-          </SheetContent>
-        </Sheet>
-      </div>
+          )}
+        </SheetContent>
+      </Sheet>
 
       <div className="rounded-lg border border-border overflow-hidden">
         <Table>
@@ -100,25 +113,14 @@ export function ProductTable({ products, categories }: ProductTableProps) {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Sheet open={editProduct?.id === p.id} onOpenChange={(o) => !o && setEditProduct(null)}>
-                        <SheetTrigger asChild>
-                          <Button variant="ghost" size="icon" onClick={() => setEditProduct(p)} data-testid="edit-product-btn">
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent>
-                          <SheetHeader>
-                            <SheetTitle>Edit product</SheetTitle>
-                          </SheetHeader>
-                          {editProduct && (
-                            <ProductForm
-                              categories={categories}
-                              product={editProduct}
-                              onSuccess={() => setEditProduct(null)}
-                            />
-                          )}
-                        </SheetContent>
-                      </Sheet>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditProduct(p)}
+                        data-testid="edit-product-btn"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -144,7 +146,7 @@ export function ProductTable({ products, categories }: ProductTableProps) {
             <DialogTitle>Delete product?</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            This will permanently delete the product. Past orders using this product will not be affected.
+            This will permanently delete the product. Past orders will not be affected.
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
