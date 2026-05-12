@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# True Foods POS
+
+A Progressive Web App (PWA) Point of Sale system for **True Foods** — a Ghanaian yoghurt business.
+
+> Works on desktop and mobile. Installable on Android/iOS like a native app.
+
+---
+
+## Features (by phase)
+
+| Phase | Feature | Status |
+|-------|---------|--------|
+| 1 | Scaffold, PWA setup, staff login | ✅ Complete |
+| 2 | Product catalogue (add/edit/delete yoghurt products) | 🔜 Next |
+| 3 | POS order screen — cart, checkout | ⏳ Planned |
+| 4 | Invoice generation + SMS via mNotify (Ghana) | ⏳ Planned |
+| 5 | Order history + sales reports | ⏳ Planned |
+| 6 | Playwright test suite + video report | ⏳ Planned |
+| 7 | Offline mode, PWA polish, mobile UX | ⏳ Planned |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| UI | shadcn/ui + Tailwind CSS v4 |
+| Database & Auth | Supabase (PostgreSQL) |
+| Invoice SMS | mNotify (Ghana) |
+| PDF Invoice | @react-pdf/renderer |
+| Testing | Playwright (video recording) |
+| PWA | next-pwa (service worker) |
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
+### 1. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set up environment variables
+```bash
+cp .env.local.example .env.local
+# Fill in your Supabase URL, anon key, and mNotify API key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run development server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+### 4. Run tests
+```bash
+npx playwright test
+# Video report opens at playwright-report/index.html
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/
+    login/              # Auth pages + server actions
+    (dashboard)/        # Protected routes (all require login)
+      page.tsx          # Dashboard home
+      products/         # Product catalogue
+      orders/           # Order history
+      orders/new/       # POS order screen
+      reports/          # Sales reports
+      settings/         # App settings
+  components/
+    auth/               # Login form
+    layout/             # Sidebar + mobile header
+    ui/                 # shadcn/ui components
+  lib/
+    supabase/           # Supabase client (browser + server)
+  middleware.ts         # Auth guard
 
-## Deploy on Vercel
+docs/
+  session-log.md        # Full change history by phase
+HANDOFF.md              # Current state + what is next
+TODO.md                 # Manual steps required from you
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Manual Setup Required
+
+See [TODO.md](./TODO.md) for steps you need to complete (GitHub repo, Supabase project, staff user creation).
+
+---
+
+## Comment Conventions (for Claude Code and Cursor switching)
+
+- `// TODO(phase-N):` — planned for phase N
+- `// NOTE:` — non-obvious decision
+- `// FIXME:` — known issue
+- `// CURSOR:` — added during a Cursor session
+- `// CLAUDE:` — added during a Claude Code session
+
+---
+
+_Built with Claude Code · True Foods 2026_
