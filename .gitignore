@@ -24,6 +24,13 @@
 .DS_Store
 *.pem
 
+# Internal working files — not for the repo
+HANDOFF.md
+TODO.md
+docs/
+CLAUDE.md
+.claude/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

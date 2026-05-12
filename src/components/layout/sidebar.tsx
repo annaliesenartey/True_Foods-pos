@@ -15,10 +15,13 @@ import { cn } from "@/lib/utils";
 import { signOut } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
 
+import { Boxes } from "lucide-react";
+
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/orders/new", label: "New Order", icon: ShoppingCart },
   { href: "/products", label: "Products", icon: Package },
+  { href: "/inventory", label: "Inventory", icon: Boxes },
   { href: "/orders", label: "Order History", icon: History },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
