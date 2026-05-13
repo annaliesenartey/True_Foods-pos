@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Package, CheckCircle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import type { Material, Product } from "@/lib/types";
 
 export default async function InventoryPage() {
@@ -29,12 +28,18 @@ export default async function InventoryPage() {
           <p className="text-muted-foreground text-sm mt-1">Stock levels, supplies, and production runs.</p>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link href="/inventory/purchases/new">Record purchase</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/inventory/production/new">Record production</Link>
-          </Button>
+          <Link
+            href="/inventory/purchases/new"
+            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-border bg-background text-sm font-medium hover:bg-muted transition-colors"
+          >
+            Record purchase
+          </Link>
+          <Link
+            href="/inventory/production/new"
+            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            Record production
+          </Link>
         </div>
       </div>
 
@@ -98,9 +103,12 @@ export default async function InventoryPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-semibold">Raw materials</h2>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/inventory/purchases/new">+ Record purchase</Link>
-          </Button>
+          <Link
+            href="/inventory/purchases/new"
+            className="inline-flex items-center h-7 px-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            + Record purchase
+          </Link>
         </div>
         <div className="rounded-lg border border-border overflow-hidden">
           <table className="w-full text-sm">

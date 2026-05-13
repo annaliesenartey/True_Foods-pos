@@ -13,12 +13,15 @@ import type { Category, Product } from "@/lib/types";
 import { createProduct, updateProduct } from "../actions";
 import { toast } from "sonner";
 
+// z.preprocess keeps input type as string for RHF compatibility with Zod v4
+const toNum = (v: unknown) => (v === "" || v == null ? undefined : Number(v));
+
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
   category_id: z.string().optional(),
   cup_size: z.enum(["500ml", "1L"]),
-  price_ghs: z.coerce.number().positive("Price must be greater than 0"),
-  low_stock_threshold: z.coerce.number().int().min(0).default(10),
+  price_ghs: z.preprocess(toNum, z.number().positive("Price must be greater than 0")),
+  low_stock_threshold: z.preprocess(toNum, z.number().int().min(0).default(10)),
   is_active: z.boolean().default(true),
   description: z.string().optional(),
 });
@@ -34,8 +37,10 @@ interface ProductFormProps {
 export function ProductForm({ categories, product, onSuccess }: ProductFormProps) {
   const [submitting, setSubmitting] = useState(false);
 
+  // Cast required: Zod v4 preprocess infers unknown input; resolver works at runtime
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema) as any,
     defaultValues: {
       name: product?.name ?? "",
       category_id: product?.category_id ?? undefined,
@@ -77,7 +82,7 @@ export function ProductForm({ categories, product, onSuccess }: ProductFormProps
           <Label>Category</Label>
           <Select
             defaultValue={product?.category_id ?? undefined}
-            onValueChange={(v) => setValue("category_id", v)}
+            onValueChange={(v) => setValue("category_id", String(v ?? ""))}
           >
             <SelectTrigger data-testid="category-select">
               <SelectValue placeholder="Select category" />

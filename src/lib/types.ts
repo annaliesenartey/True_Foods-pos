@@ -68,3 +68,33 @@ export interface ProductionRunMaterial {
   quantity_used: number;
   material?: Material;
 }
+
+// ── Orders ────────────────────────────────────────────────────
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  order_number: number;
+  customer_name: string | null;
+  customer_phone: string | null;
+  total_amount: number;
+  status: "pending" | "completed" | "cancelled";
+  notes: string | null;
+  created_at: string;
+  items?: OrderItem[];
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  product_name: string;
+  cup_size: string;
+  unit_price: number;
+  quantity: number;
+  line_total: number;
+}

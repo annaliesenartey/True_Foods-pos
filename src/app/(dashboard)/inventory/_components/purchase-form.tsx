@@ -14,11 +14,14 @@ import { toast } from "sonner";
 import { recordPurchase } from "../actions";
 import type { Material } from "@/lib/types";
 
+// z.preprocess keeps the input type as string for RHF compatibility with Zod v4
+const toNum = (v: unknown) => (v === "" || v === null || v === undefined ? undefined : Number(v));
+
 const schema = z.object({
   material_id: z.string().uuid("Select a material"),
-  quantity: z.coerce.number().positive("Enter a quantity"),
-  cost_per_unit: z.coerce.number().min(0).optional(),
-  total_cost: z.coerce.number().min(0).optional(),
+  quantity: z.preprocess(toNum, z.number().positive("Enter a quantity")),
+  cost_per_unit: z.preprocess(toNum, z.number().min(0).optional()),
+  total_cost: z.preprocess(toNum, z.number().min(0).optional()),
   purchased_at: z.string(),
   notes: z.string().optional(),
 });
@@ -30,8 +33,10 @@ export function PurchaseForm({ materials }: { materials: Material[] }) {
   const [submitting, setSubmitting] = useState(false);
   const selectedMaterialId = useState<string>("");
 
+  // Cast required: Zod v4 preprocess infers unknown input; resolver works at runtime
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema) as any,
     defaultValues: {
       purchased_at: new Date().toISOString().split("T")[0],
     },
@@ -57,7 +62,7 @@ export function PurchaseForm({ materials }: { materials: Material[] }) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-1.5">
         <Label>Material</Label>
-        <Select onValueChange={(v) => setValue("material_id", v)}>
+        <Select onValueChange={(v) => setValue("material_id", String(v ?? ""))}>
           <SelectTrigger data-testid="material-select">
             <SelectValue placeholder="Select material" />
           </SelectTrigger>

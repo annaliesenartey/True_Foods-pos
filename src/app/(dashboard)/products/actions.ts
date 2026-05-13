@@ -26,7 +26,7 @@ export async function createProduct(formData: FormData) {
     description: formData.get("description") || null,
   });
 
-  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const { error } = await supabase.from("products").insert(parsed.data);
   if (error) return { error: error.message };
@@ -47,7 +47,7 @@ export async function updateProduct(id: string, formData: FormData) {
     description: formData.get("description") || null,
   });
 
-  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const { error } = await supabase.from("products").update(parsed.data).eq("id", id);
   if (error) return { error: error.message };

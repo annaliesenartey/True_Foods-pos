@@ -66,7 +66,7 @@ export function MaterialsClient({ materials }: { materials: Material[] }) {
           </div>
           <div className="space-y-1.5">
             <Label>Unit</Label>
-            <Select value={unit} onValueChange={setUnit}>
+            <Select value={unit} onValueChange={(v) => setUnit(v ?? unit)}>
               <SelectTrigger data-testid="unit-select">
                 <SelectValue />
               </SelectTrigger>

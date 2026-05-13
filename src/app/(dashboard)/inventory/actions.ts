@@ -22,7 +22,7 @@ export async function updateMaterial(id: string, formData: FormData) {
     cost_per_unit: formData.get("cost_per_unit") || null,
   });
 
-  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const { error } = await supabase.from("materials").update(parsed.data).eq("id", id);
   if (error) return { error: error.message };
@@ -53,7 +53,7 @@ export async function recordPurchase(formData: FormData) {
     notes: formData.get("notes") || null,
   });
 
-  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   // Insert purchase record
   const { error: purchaseError } = await supabase

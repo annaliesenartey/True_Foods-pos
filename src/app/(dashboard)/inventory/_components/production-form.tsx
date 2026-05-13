@@ -85,7 +85,7 @@ export function ProductionForm({ products, materials }: ProductionFormProps) {
         {items.map((item, i) => (
           <div key={i} className="flex gap-2 items-end">
             <div className="flex-1 space-y-1">
-              <Select value={item.product_id} onValueChange={(v) => updateItem(i, "product_id", v)}>
+              <Select value={item.product_id} onValueChange={(v) => updateItem(i, "product_id", v ?? "")}>
                 <SelectTrigger data-testid="production-product-select">
                   <SelectValue placeholder="Select product" />
                 </SelectTrigger>
@@ -130,7 +130,7 @@ export function ProductionForm({ products, materials }: ProductionFormProps) {
           return (
             <div key={i} className="flex gap-2 items-end">
               <div className="flex-1 space-y-1">
-                <Select value={mat.material_id} onValueChange={(v) => updateMat(i, "material_id", v)}>
+                <Select value={mat.material_id} onValueChange={(v) => updateMat(i, "material_id", v ?? "")}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select material" />
                   </SelectTrigger>
