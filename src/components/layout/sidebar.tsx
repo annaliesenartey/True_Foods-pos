@@ -19,7 +19,7 @@ import { signOut } from "@/app/login/actions";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
-  { href: "/", label: "Register", icon: ShoppingCart },
+  { href: "/orders/new", label: "Register", icon: ShoppingCart },
   { href: "/orders", label: "Orders", icon: History },
   { href: "/products", label: "Catalog", icon: Package },
   { href: "/inventory", label: "Inventory", icon: Boxes },
@@ -49,8 +49,8 @@ export function Sidebar() {
       <nav className="flex-1 px-2 py-3 space-y-0.5">
         {navItems.map(({ href, label, icon: Icon, indent }) => {
           const active =
-            href === "/"
-              ? pathname === "/" || pathname === "/orders/new"
+            href === "/orders/new"
+              ? pathname === "/orders/new"
               : pathname === href || (href !== "/" && pathname.startsWith(href));
           return (
             <Link

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   ShoppingCart, Plus, Minus, X,
-  User, Phone, FileText, AlertTriangle,
+  User, Phone, FileText, AlertTriangle, Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,7 @@ interface RegisterClientProps {
 export function RegisterClient({ products, categories }: RegisterClientProps) {
   const router = useRouter();
 
-  // ── Cart state ────────────────────────────────────────────────
+  // ── State ─────────────────────────────────────────────────────
   const [cart, setCart] = useState<CartItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [customerName, setCustomerName] = useState("");
@@ -33,6 +33,7 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
   const [cartOpen, setCartOpen] = useState(false);
   const [placing, setPlacing] = useState(false);
 
+  // ── Derived ───────────────────────────────────────────────────
   const cartTotal = useMemo(
     () => cart.reduce((s, i) => s + i.product.price_ghs * i.quantity, 0),
     [cart]
@@ -41,11 +42,11 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
     () => cart.reduce((s, i) => s + i.quantity, 0),
     [cart]
   );
-
   const filteredProducts = useMemo(() => {
     const active = products.filter((p) => p.is_active);
-    if (activeCategory === "all") return active;
-    return active.filter((p) => p.category_id === activeCategory);
+    return activeCategory === "all"
+      ? active
+      : active.filter((p) => p.category_id === activeCategory);
   }, [products, activeCategory]);
 
   // ── Cart mutations ────────────────────────────────────────────
@@ -120,8 +121,9 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
     router.refresh();
   }
 
-  // ── Cart panel (shared between desktop sidebar + mobile sheet) ─
-  const CartPanel = () => (
+  // ── Cart panel JSX (used in both desktop sidebar and mobile sheet)
+  // NOTE: defined as a variable, NOT a nested component, to avoid remounting
+  const cartPanelJsx = (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
@@ -150,7 +152,7 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
           <div className="py-3 space-y-3">
             {cart.map((item) => (
               <div key={item.product.id} className="flex items-center gap-2">
-                {/* Info */}
+                {/* Product info */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium leading-tight truncate">{item.product.name}</p>
                   <p className="text-xs text-muted-foreground">
@@ -219,7 +221,7 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
             <Textarea
               placeholder="Notes (optional)"
               value={notes}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNotes(e.target.value)}
+              onChange={(e) => setNotes(e.target.value)}
               className="pl-8 text-sm min-h-0 h-[4.5rem] resize-none"
             />
           </div>
@@ -254,7 +256,7 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
       <div className="md:flex md:gap-5 md:items-start">
         {/* ── Left: product browser ─────────────────────────── */}
         <div className="flex-1 min-w-0 pb-24 md:pb-0">
-          {/* Category filter */}
+          {/* Category filter pills */}
           <div className="flex items-center gap-2 pb-4 overflow-x-auto">
             {[{ id: "all", name: "All" }, ...categories].map((cat) => (
               <button
@@ -273,8 +275,12 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
 
           {/* Product grid */}
           {filteredProducts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground text-sm">
-              No products in this category
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground text-sm gap-2">
+              <Package className="h-12 w-12 opacity-20" />
+              <span>No active products found</span>
+              <a href="/products" className="text-primary text-xs hover:underline">
+                Go to Catalog to add products →
+              </a>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3" data-testid="product-grid">
@@ -346,7 +352,7 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
 
         {/* ── Desktop: sticky cart sidebar ──────────────────── */}
         <div className="hidden md:flex sticky top-0 w-80 shrink-0 flex-col border border-border rounded-xl bg-card overflow-hidden max-h-[calc(100vh-5rem)]">
-          <CartPanel />
+          {cartPanelJsx}
         </div>
       </div>
 
@@ -370,16 +376,13 @@ export function RegisterClient({ products, categories }: RegisterClientProps) {
 
       {/* ── Mobile: cart bottom sheet ─────────────────────── */}
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
-        <SheetContent
-          side="bottom"
-          className="h-[88vh] p-0 rounded-t-2xl flex flex-col"
-        >
+        <SheetContent side="bottom" className="h-[88vh] p-0 rounded-t-2xl flex flex-col">
           {/* Drag handle */}
           <div className="flex justify-center pt-3 pb-1 shrink-0">
             <div className="w-9 h-1 rounded-full bg-border" />
           </div>
           <div className="flex-1 overflow-hidden">
-            <CartPanel />
+            {cartPanelJsx}
           </div>
         </SheetContent>
       </Sheet>
