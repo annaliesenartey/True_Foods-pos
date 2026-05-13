@@ -4,7 +4,8 @@ import type { Material } from "@/lib/types";
 
 export default async function MaterialsPage() {
   const supabase = await createClient();
-  const { data: materials } = await supabase.from("materials").select("*").order("name");
+  const { data: materials, error } = await supabase.from("materials").select("*").order("name");
+  if (error) console.error("Materials fetch error:", error);
 
   return (
     <div className="max-w-2xl space-y-6">
