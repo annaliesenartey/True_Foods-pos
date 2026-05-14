@@ -69,6 +69,44 @@ export interface ProductionRunMaterial {
   material?: Material;
 }
 
+// ── Customers ─────────────────────────────────────────────────
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  orders?: Order[];
+}
+
+// ── Expenses ──────────────────────────────────────────────────
+
+export const EXPENSE_CATEGORIES = [
+  "Rent",
+  "Transport",
+  "Utilities",
+  "Marketing",
+  "Packaging",
+  "Staff",
+  "Equipment",
+  "Other",
+] as const;
+
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
+
+export interface Expense {
+  id: string;
+  category: ExpenseCategory;
+  description: string;
+  amount: number;
+  expense_date: string;
+  notes: string | null;
+  created_at: string;
+}
+
 // ── Orders ────────────────────────────────────────────────────
 
 export interface CartItem {
@@ -79,6 +117,7 @@ export interface CartItem {
 export interface Order {
   id: string;
   order_number: number;
+  customer_id: string | null;
   customer_name: string | null;
   customer_phone: string | null;
   total_amount: number;
@@ -86,6 +125,7 @@ export interface Order {
   notes: string | null;
   created_at: string;
   items?: OrderItem[];
+  customer?: Customer;
 }
 
 export interface OrderItem {

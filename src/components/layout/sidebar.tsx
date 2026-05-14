@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
   ShoppingCart,
   Package,
   History,
@@ -13,18 +12,24 @@ import {
   Boxes,
   Tag,
   FlaskConical,
+  Users,
+  Receipt,
+  LayoutDashboard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/login/actions";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/orders/new", label: "Register", icon: ShoppingCart },
   { href: "/orders", label: "Orders", icon: History },
+  { href: "/customers", label: "Customers", icon: Users },
   { href: "/products", label: "Catalog", icon: Package },
   { href: "/inventory", label: "Inventory", icon: Boxes },
   { href: "/inventory/categories", label: "Categories", icon: Tag, indent: true },
   { href: "/inventory/materials", label: "Materials", icon: FlaskConical, indent: true },
+  { href: "/expenses", label: "Expenses", icon: Receipt },
   { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
@@ -49,9 +54,13 @@ export function Sidebar() {
       <nav className="flex-1 px-2 py-3 space-y-0.5">
         {navItems.map(({ href, label, icon: Icon, indent }) => {
           const active =
-            href === "/orders/new"
+            href === "/"
+              ? pathname === "/"
+              : href === "/orders/new"
               ? pathname === "/orders/new"
-              : pathname === href || (href !== "/" && pathname.startsWith(href));
+              : href === "/orders"
+              ? pathname === "/orders"
+              : pathname === href || pathname.startsWith(href + "/");
           return (
             <Link
               key={href}
